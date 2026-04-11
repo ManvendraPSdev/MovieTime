@@ -6,7 +6,7 @@ const favMovieSchema = new mongoose.Schema({
         ref: "users",
         require: [true, "userId is required !"]
     },
-    movieId: {
+    tmbdId: {
         type: String,
         require: [true, "movieId is required !"]
     },
@@ -26,6 +26,11 @@ const favMovieSchema = new mongoose.Schema({
         type: String,
         default: null, // handle missing poster
     },
+
+    overView : {
+        type : String , 
+        default : ""
+    }
 } , {
     timestamps : true
 }) ; 
