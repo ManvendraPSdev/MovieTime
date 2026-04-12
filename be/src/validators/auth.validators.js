@@ -2,7 +2,7 @@ import { body } from "express-validator";
 
 const register = [
 
-    body("name")
+    body("userName")
         .trim()
         .notEmpty()
         .withMessage("userName is required")
@@ -19,7 +19,7 @@ const register = [
 
     body("password")
         .trim()
-        .isEmpty()
+        .notEmpty()
         .withMessage("password is required")
         .isLength({min:6})
         .withMessage("password must be of atleast 6 characters")

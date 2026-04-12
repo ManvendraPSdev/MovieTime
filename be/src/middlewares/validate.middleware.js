@@ -1,4 +1,4 @@
-import validationResult from "express-validator" ; 
+import {validationResult} from "express-validator" ; 
 
 /**
  * Middleware that uses express-validator validationResult(req) to collect errors 
