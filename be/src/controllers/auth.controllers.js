@@ -3,6 +3,7 @@ import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import blackListModel from "../models/blackList.model.js";
+import banModel from "../models/bannedUser.model.js";
 
 // REGISTER
 async function register(req, res) {
@@ -33,18 +34,19 @@ async function register(req, res) {
             { expiresIn: "1d" }
         );
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict"
-        });
+        const cookieOptions = {
+            httpOnly : true , 
+            secure : process.env.NODE_ENV === "production" ,
+            sameSite : process.env.NODE_ENV==="production" ? "none" : "lax" ,
+            maxAge : 7 * 24 * 60 * 60 * 1000,
+        }
+
+        res.cookie("token", token, cookieOptions);
 
         return res.status(201).json({
             message: "User created successfully!",
-            user: {
-                userName: user.userName,
-                email: user.email
-            }
+            user ,
+            token
         });
 
     } catch (error) {
@@ -56,15 +58,22 @@ async function register(req, res) {
 
 // LOGIN
 async function login(req, res) {
-    try {
         const { email, password } = req.body;
 
         const user = await userModel.findOne({ email });
 
         if (!user) {
-            return res.status(401).json({
-                message: "Invalid email or password"
+            return res.status(404).json({
+                message: "user not found"
             });
+        }
+
+        const isUserBanned = await banModel.findOne({email}) ; 
+
+        if(isUserBanned){
+            return res.status(403).json({
+                message : "Accound is banned"
+            })
         }
 
         const isValidPassword = await bcrypt.compare(password, user.password);
@@ -81,47 +90,45 @@ async function login(req, res) {
             { expiresIn: "1d" }
         );
 
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict"
-        });
+        const cookieOptions = {
+            httpOnly : true , 
+            secure : process.env.NODE_ENV === "production" , 
+            sameSite : process.env.NODE_ENV === "production" ? "none" : "lax" ,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        }
+
+        res.cookie("token", token, cookieOptions);
+
+        const userWithoutPassword = await userModel.findById(user._id) ; 
+
 
         return res.status(200).json({
             message: "User logged in successfully",
-            user: {
-                userName: user.userName,
-                email: user.email
-            }
+            user : userWithoutPassword , 
+            token
         });
-
-    } catch (error) {
-        return res.status(500).json({
-            message: "Login failed"
-        });
-    }
 }
 
 // LOGOUT
 async function logout(req, res) {
-    try {
         const token = req.cookies.token;
 
         if (token) {
             await blackListModel.create({ token });
         }
 
-        res.clearCookie("token");
+        const clearOptions = {httpOnly : true}
+
+        if(process.env.NODE_ENV==="production"){
+            clearOptions.secure = true , 
+            clearOptions.sameSite = "none"
+        }
+
+        res.clearCookie("token" , clearOptions);
 
         return res.status(200).json({
             message: "User logged out successfully!"
         });
-
-    } catch (error) {
-        return res.status(500).json({
-            message: "Logout failed"
-        });
-    }
 }
 
 // GET ME
@@ -130,14 +137,13 @@ async function getMe(req, res) {
     const user = await userModel.findById(req.user.id)
 
     console.log(user) ; 
+    if (!user) {
+        return res.status(400).json({ message: "User not found" });
+    }
 
     res.status(200).json({
         message: "User details fetched successfully",
-        user: {
-            id: user._id,
-            username: user.userName,
-            email: user.email
-        }
+        user
     })
 
 }

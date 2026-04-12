@@ -11,7 +11,7 @@ const userBannedSchema = new mongoose.Schema({
         trim : true , 
     } , 
     bannedAt : {
-        type : Data , 
+        type : Date , 
         default : Date.now
     } , 
     bannedBy : {
