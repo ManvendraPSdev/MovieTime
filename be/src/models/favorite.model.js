@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const favMovieSchema = new mongoose.Schema({
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
         require: [true, "userId is required !"]
