@@ -1,0 +1,144 @@
+import { body , param } from "express-validator";
+
+const tmdbIdParam = param("tmdbId")
+    .notEmpty()
+    .withMessage("tmdbId is required")
+    .isLength({ max: 50 })
+    .withMessage("tmdbId too long");
+
+const mongooseId = param("id")
+    .isMongoId()
+    .withMessage("Invalid movie ID");
+
+const createMovieValidator = [
+    body("title")
+        .trim()
+        .notEmpty()
+        .withMessage("Title is required")
+        .isLength({ max: 300 })
+        .withMessage("Title must be at most 300 characters"),
+    body("category")
+        .trim()
+        .notEmpty()
+        .withMessage("Category is required")
+        .isIn(["movie", "tv"])
+        .withMessage("Category must be 'movie' or 'tv'"),
+    body("tmdbId")
+        .optional()
+        .trim()
+        .isLength({ max: 50 })
+        .withMessage("TMDB ID must be at most 50 characters"),
+    body("poster")
+        .optional()
+        .trim()
+        .isLength({ max: 1000 })
+        .withMessage("Poster URL too long"),
+    body("description")
+        .optional()
+        .trim()
+        .isLength({ max: 5000 })
+        .withMessage("Description too long"),
+    body("releaseDate")
+        .optional()
+        .trim()
+        .isLength({ max: 20 })
+        .withMessage("Release date invalid"),
+    body("trailer")
+        .optional()
+        .trim()
+        .isLength({ max: 500 })
+        .withMessage("Trailer URL too long"),
+    body("genre")
+        .optional()
+        .trim()
+        .isLength({ max: 200 })
+        .withMessage("Genre too long"),
+    body("genres")
+        .optional()
+        .isArray()
+        .withMessage("Genres must be an array"),
+    body("genres.*")
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage("Genre name too long"),
+    body("banner")
+        .optional()
+        .trim()
+        .isLength({ max: 1000 })
+        .withMessage("Banner URL too long"),
+    body("runtime")
+        .optional({ values: "null" })
+        .toInt()
+        .isInt({ min: 0, max: 9999 })
+        .withMessage("Runtime must be a number (minutes)"),
+];
+
+const updateMovieValidator = [
+    param("id").isMongoId().withMessage("Invalid movie ID"),
+    body("title")
+        .optional()
+        .trim()
+        .notEmpty()
+        .withMessage("Title cannot be empty")
+        .isLength({ max: 300 })
+        .withMessage("Title must be at most 300 characters"),
+    body("category")
+        .optional()
+        .trim()
+        .isIn(["movie", "tv"])
+        .withMessage("Category must be 'movie' or 'tv'"),
+    body("tmdbId")
+        .optional()
+        .trim()
+        .isLength({ max: 50 })
+        .withMessage("TMDB ID must be at most 50 characters"),
+    body("poster")
+        .optional()
+        .trim()
+        .isLength({ max: 1000 })
+        .withMessage("Poster URL too long"),
+    body("description")
+        .optional()
+        .trim()
+        .isLength({ max: 5000 })
+        .withMessage("Description too long"),
+    body("releaseDate")
+        .optional()
+        .trim()
+        .isLength({ max: 20 })
+        .withMessage("Release date invalid"),
+    body("trailer")
+        .optional()
+        .trim()
+        .isLength({ max: 500 })
+        .withMessage("Trailer URL too long"),
+    body("genre")
+        .optional()
+        .trim()
+        .isLength({ max: 200 })
+        .withMessage("Genre too long"),
+    body("genres")
+        .optional()
+        .isArray()
+        .withMessage("Genres must be an array"),
+    body("genres.*")
+        .optional()
+        .trim()
+        .isLength({ max: 100 })
+        .withMessage("Genre name too long"),
+    body("banner")
+        .optional()
+        .trim()
+        .isLength({ max: 1000 })
+        .withMessage("Banner URL too long"),
+    body("runtime")
+        .optional({ values: "null" })
+        .toInt()
+        .isInt({ min: 0, max: 9999 })
+        .withMessage("Runtime must be a number (minutes)"),
+];
+
+const getOrDeleteById = [mongooseId];
+
+export{ createMovieValidator, updateMovieValidator, getOrDeleteById, tmdbIdParam };

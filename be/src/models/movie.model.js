@@ -24,4 +24,4 @@ const movieSchema = new mongoose.Schema({
 
 movieSchema.index({ category: 1, createdAt: -1 });
 
-module.exports = mongoose.model("movies", movieSchema);
+export const movieModel = mongoose.model("movies", movieSchema);
