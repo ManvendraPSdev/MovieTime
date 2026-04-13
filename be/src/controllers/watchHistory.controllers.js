@@ -1,5 +1,5 @@
-import watchHistoryModel from "../models/movieHistory.model";
-import asyncHandler from "../utils/asyncHandler";
+import watchHistoryModel from "../models/movieHistory.model.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 const addWatchHistory = asyncHandler(async(req , res)=>{
     const {tmdbId , type , title , poster , overview} = req.body ; 
