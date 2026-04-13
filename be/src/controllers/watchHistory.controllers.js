@@ -44,3 +44,5 @@ const clearWatchHistory = asyncHandler(async(req , res)=>{
     await watchHistoryModel.deleteMany({user : req.user.id}) ; 
     return res.status(200).json({message : "history cleared sucessfully"}) ; 
 })
+
+export {addWatchHistory , getWatchHistory , clearWatchHistory} ; 
