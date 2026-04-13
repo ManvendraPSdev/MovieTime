@@ -8,7 +8,7 @@ export const movieRouter = express.Router() ;
 
 movieRouter.get("/" , getMovies) ; 
 movieRouter.get("/:id" , getOrDeleteById , validate , getMovieById) ;
-movieRouter.get("/tmdb/:id" , [tmdbIdParam] , validate , getMovieByTmdbId) 
+movieRouter.get("/tmdb/:tmdbId" , [tmdbIdParam] , validate , getMovieByTmdbId) 
 
 movieRouter.post("/" , authenticate, authorize(["admin"]) , createMovieValidator , validate , createMovie) ; 
 movieRouter.put("/:id" , authenticate , authorize(["admin"]) , updateMovieValidator , validate , updateMovie) ; 

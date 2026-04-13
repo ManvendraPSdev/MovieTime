@@ -117,7 +117,7 @@ const updateMovie = asyncHandler(async (req , res)=>{
     const {title , poster , description , tmdbId , releaseDate , trailer , genre , genres , banner , runtime , category} = req.body ; 
 
     const singleGenere = genre != null ? String(genre).trim : undefined ; 
-    const genresArr = Array.isArray(genres) ? filter((g)=> g!=null && String(g).trim()) : undefined ; 
+    const genresArr = Array.isArray(genres) ? genres.filter((g)=> g!=null && String(g).trim()) : undefined ; 
     const finalGeneres = genresArr !== undefined ? (genresArr.length > 0 ? genresArr : (singleGenere ? [singleGenere] : [])) : undefined ; 
 
     const runtimeNum = runtime != null && runtime !== "" ? Number(runtime) : null ; 
