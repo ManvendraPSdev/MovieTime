@@ -14,7 +14,7 @@ const addFavMovie = asyncHandler(async(req , res)=>{
         })
     }
 
-    const existing = await favMovieModel.findOne({user : req.user.id , tmdbId : String(tmdbId), type}) ; 
+    const existing = await favMovieModel.findOne({user : req.user.id , tmdbId : String(tmdbId), mediaType}) ; 
     if(existing){
         return res.status(200).json({
             message : "User Already exisist in the DB !"
@@ -63,7 +63,7 @@ const getFavMovieBytmdbId = asyncHandler(async(req , res)=>{
         tmdbId : String(tmdbId) ,
         type : type === "tv" ? "tv" : "movie"
     })
-    return res.status(200).json({ isFavorite: !!favorite });
+    return res.status(200).json({ isFavorite: !!fav });
 })
 
 /**
