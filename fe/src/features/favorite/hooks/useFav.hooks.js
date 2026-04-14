@@ -40,11 +40,14 @@ export const useFav = () => {
       const data = await addFavorite(movieData);
 
       setFavorites((prev) => {
+        const mt = movieData.mediaType === "tv" ? "tv" : "movie";
         const exists = prev.find(
-          (item) => item.tmdbId === movieData.tmdbId
+          (item) =>
+            String(item.tmdbId) === String(movieData.tmdbId) &&
+            (item.mediaType || "movie") === mt
         );
         if (exists) return prev;
-        return [data.favMovie, ...prev];
+        return data.favMovie ? [data.favMovie, ...prev] : prev;
       });
 
       return data;
@@ -61,8 +64,15 @@ export const useFav = () => {
     try {
       await removeFavorite(tmdbId, type);
 
+      const mt = type === "tv" ? "tv" : "movie";
       setFavorites((prev) =>
-        prev.filter((item) => item.tmdbId !== String(tmdbId))
+        prev.filter(
+          (item) =>
+            !(
+              String(item.tmdbId) === String(tmdbId) &&
+              (item.mediaType || "movie") === mt
+            )
+        )
       );
     } catch (err) {
       setError(err.message || "Failed to remove favorite");

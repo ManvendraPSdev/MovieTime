@@ -126,6 +126,37 @@
   }
 }
 
+.favBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.5);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.favBtnActive {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.55);
+  background: rgba(248, 113, 113, 0.12);
+}
+
 .inlineError {
   margin-top: 10px;
   color: var(--color-error);

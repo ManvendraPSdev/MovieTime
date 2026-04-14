@@ -21,7 +21,7 @@ const FavPage = () => {
         (item) =>
           !(
             String(item.tmdbId) === String(tmdbId) &&
-            (item.type || "movie") === mediaType
+            (item.mediaType || item.type || "movie") === mediaType
           )
       )
     );

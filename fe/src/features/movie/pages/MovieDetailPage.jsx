@@ -1,16 +1,32 @@
-import { useEffect, useMemo, useState } from "react";
-import { useLocation, useParams } from "react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router";
+import { RiHeartFill, RiHeartLine } from "react-icons/ri";
 import Loader from "../components/Loader";
 import TrailerModal from "../components/TrailerModal";
+import { useAuth } from "../../auth/hooks/useAuth.hook";
 import { useMovie } from "../hooks/useMovie.hook";
 import { useTrailer } from "../hooks/useTrailer";
 import { useTmdbApi } from "../hooks/useTmdbApi";
 import { fetchMovieByTmdbId } from "../services/movie.api";
 import { getCredits } from "../services/tmdb.api";
+import {
+  addFavorite,
+  checkFavorite,
+  removeFavorite,
+} from "../../favorite/services/fav.api";
+import { addWatchHistory } from "../../watchHistory/services/watchHistory.api";
 import styles from "./MovieDetailPage.module.scss";
 
 const isMongoId = (value) =>
   /^[a-fA-F0-9]{24}$/.test(String(value || ""));
+
+/** Store TMDB-style path (/file.jpg) so list pages can prefix w500. */
+function posterPathForApi(posterUrl) {
+  if (!posterUrl || posterUrl === "/placeholder-poster.svg") return "";
+  if (posterUrl.startsWith("/") && !posterUrl.startsWith("//")) return posterUrl;
+  const m = String(posterUrl).match(/\/t\/p\/[^/]+(\/[^?#]+)/);
+  return m ? m[1] : "";
+}
 
 const mapTmdbToView = (data, mediaKind) => ({
   tmdbId: String(data.id || ""),
@@ -61,6 +77,8 @@ const normalizeBackendDoc = (doc, mediaKind) => {
 const MovieDetailPage = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const mediaKind = location.pathname.startsWith("/tv") ? "tv" : "movie";
 
   const { movie, loading, error, getMovie } = useMovie();
@@ -79,6 +97,14 @@ const MovieDetailPage = () => {
   const [tmdbLoading, setTmdbLoading] = useState(false);
   const [tmdbError, setTmdbError] = useState(null);
   const [cast, setCast] = useState([]);
+  const [isFav, setIsFav] = useState(false);
+  const [favBusy, setFavBusy] = useState(false);
+
+  const historyLoggedRef = useRef("");
+
+  useEffect(() => {
+    historyLoggedRef.current = "";
+  }, [id, user?._id, user?.id]);
 
   useEffect(() => {
     if (!id) return;
@@ -150,6 +176,25 @@ const MovieDetailPage = () => {
     return displayMovie.tmdbId || id || "";
   }, [displayMovie, mongo, id]);
 
+  const historyMeta = useMemo(() => {
+    if (!displayMovie) return null;
+    const tid = String(
+      mongo ? displayMovie.tmdbId || "" : displayMovie.tmdbId || id || ""
+    );
+    if (!tid) return null;
+    const type =
+      displayMovie.mediaType === "tv" || displayMovie.category === "tv"
+        ? "tv"
+        : "movie";
+    return {
+      tid,
+      type,
+      title: displayMovie.title || displayMovie.name || "No Title",
+      overview: displayMovie.overview || displayMovie.description || "",
+      poster: posterPathForApi(displayMovie.poster),
+    };
+  }, [displayMovie, mongo, id]);
+
   useEffect(() => {
     if (!creditsId) {
       setCast([]);
@@ -171,6 +216,39 @@ const MovieDetailPage = () => {
       cancelled = true;
     };
   }, [creditsKind, creditsId]);
+
+  useEffect(() => {
+    if (!user || displayLoading || displayError || !historyMeta) return;
+    const key = `${historyMeta.type}:${historyMeta.tid}`;
+    if (historyLoggedRef.current === key) return;
+    historyLoggedRef.current = key;
+
+    addWatchHistory({
+      tmdbId: historyMeta.tid,
+      type: historyMeta.type,
+      title: historyMeta.title,
+      poster: historyMeta.poster,
+      overview: historyMeta.overview,
+    }).catch((e) => console.log(e));
+  }, [user, displayLoading, displayError, historyMeta]);
+
+  useEffect(() => {
+    if (!user || displayLoading || displayError || !historyMeta) {
+      if (!user) setIsFav(false);
+      return;
+    }
+    let cancelled = false;
+    checkFavorite(historyMeta.tid, historyMeta.type)
+      .then((d) => {
+        if (!cancelled) setIsFav(!!d?.isFavorite);
+      })
+      .catch(() => {
+        if (!cancelled) setIsFav(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, displayLoading, displayError, historyMeta]);
 
   if (displayLoading) return <Loader />;
   if (displayError) return <p className={styles.error}>{displayError}</p>;
@@ -203,6 +281,35 @@ const MovieDetailPage = () => {
   const handleCloseTrailer = () => {
     setShowTrailer(false);
     resetTrailer();
+  };
+
+  const handleToggleFavorite = async () => {
+    if (!historyMeta) return;
+    if (!user) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+    if (favBusy) return;
+    setFavBusy(true);
+    try {
+      if (isFav) {
+        await removeFavorite(historyMeta.tid, historyMeta.type);
+        setIsFav(false);
+      } else {
+        await addFavorite({
+          tmdbId: historyMeta.tid,
+          mediaType: historyMeta.type === "tv" ? "tv" : "movie",
+          title: historyMeta.title,
+          posterPath: historyMeta.poster,
+          overView: historyMeta.overview,
+        });
+        setIsFav(true);
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setFavBusy(false);
+    }
   };
 
   const backdrop =
@@ -270,6 +377,29 @@ const MovieDetailPage = () => {
                 onClick={handleOpenTrailer}
               >
                 Watch Trailer
+              </button>
+              <button
+                type="button"
+                className={`${styles.favBtn} ${isFav ? styles.favBtnActive : ""}`}
+                onClick={handleToggleFavorite}
+                disabled={favBusy || !historyMeta}
+                title={
+                  !historyMeta
+                    ? "Unavailable"
+                    : user
+                      ? isFav
+                        ? "Remove from favorites"
+                        : "Add to favorites"
+                      : "Log in to save favorites"
+                }
+                aria-pressed={isFav}
+                aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
+              >
+                {isFav ? (
+                  <RiHeartFill size={22} />
+                ) : (
+                  <RiHeartLine size={22} />
+                )}
               </button>
             </div>
             {trailerError ? (
