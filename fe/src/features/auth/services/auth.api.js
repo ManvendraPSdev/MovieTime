@@ -36,7 +36,7 @@ export async function logout(){
     }
 }
 
-export async function getMer(){
+export async function getMe(){
     try {
         const response = await api.get("/getMe") ; 
         return response.data ; 
