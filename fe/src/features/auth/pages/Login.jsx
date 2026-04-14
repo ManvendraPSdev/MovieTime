@@ -1,22 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth.hook";
 import "./auth-pages.scss";
 
 const Login = () => {
+  const navigate = useNavigate();
   const { handelLogin, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [ok, setOk] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setOk("");
     try {
       await handelLogin({ email, password });
-      setOk("Signed in.");
+      navigate("/", { replace: true });
     } catch (err) {
       const msg =
         err?.response?.data?.message || "Could not sign in. Try again.";
@@ -28,7 +27,6 @@ const Login = () => {
     <div className="auth-page">
       <div className="auth-card">
         <h1 className="auth-title">Log in</h1>
-        {ok ? <p className="auth-msg">{ok}</p> : null}
         {error ? <p className="auth-err">{error}</p> : null}
         <form className="auth-form" onSubmit={onSubmit}>
           <div className="auth-field">
