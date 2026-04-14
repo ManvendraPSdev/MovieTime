@@ -8,9 +8,9 @@ const tmdb = axios.create({
 });
 
 
-export const getTrending = async (type = "movie", time = "day") => {
+export const getTrending = async (type = "movie", time = "day", page = 1) => {
   const res = await tmdb.get(`/trending/${type}/${time}`, {
-    params: { api_key: API_KEY },
+    params: { api_key: API_KEY, page },
   });
   return res.data;
 };

@@ -1,50 +1,61 @@
-import { useEffect, useState } from "react";
-import MovieCard from "../components/MovieCard";
+import { useCallback } from "react";
+import MediaCarousel from "../components/MediaCarousel";
 import { useTmdbApi } from "../hooks/useTmdbApi";
 import styles from "./HomePage.module.scss";
 
 const HomePage = () => {
-  const { getTrending } = useTmdbApi();
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { getTrending, getPopular } = useTmdbApi();
 
-  useEffect(() => {
-    const load = async () => {
-      setLoading(true);
-      try {
-        const data = await getTrending("movie", "day");
-        const formatted = (data?.results || []).map((movie) => ({
-          _id: String(movie.id),
-          title: movie.title || movie.name || "Untitled",
-          poster: movie.poster_path
-            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-            : "",
-          overview: movie.overview || "",
-          vote_average: movie.vote_average,
-        }));
-        setMovies(formatted);
-      } catch (error) {
-        setMovies([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadTrendingMovies = useCallback(
+    (p) => getTrending("movie", "day", p),
+    [getTrending]
+  );
 
-    load();
-  }, []);
+  const loadTrendingTv = useCallback(
+    (p) => getTrending("tv", "day", p),
+    [getTrending]
+  );
+
+  const loadPopularMovies = useCallback(
+    (p) => getPopular("movie", p),
+    [getPopular]
+  );
+
+  const loadPopularTv = useCallback(
+    (p) => getPopular("tv", p),
+    [getPopular]
+  );
 
   return (
     <main className={styles.page}>
-      <h1 className={styles.title}>Trending Movies</h1>
-      {loading ? (
-        <p>Loading movies...</p>
-      ) : (
-        <section className={styles.grid}>
-          {movies.map((movie) => (
-            <MovieCard key={movie._id} movie={movie} kind="movie" />
-          ))}
-        </section>
-      )}
+      <header className={styles.hero}>
+        <h1 className={styles.heroTitle}>Discover</h1>
+        <p className={styles.heroSub}>
+          Trending and popular titles — scroll each row sideways. More pages load
+          when you reach the end.
+        </p>
+      </header>
+
+      <MediaCarousel
+        title="Trending Movies"
+        kind="movie"
+        loadPage={loadTrendingMovies}
+      />
+      <MediaCarousel
+        title="Trending TV Shows"
+        kind="tv"
+        loadPage={loadTrendingTv}
+      />
+      <MediaCarousel
+        title="Popular Movies"
+        kind="movie"
+        loadPage={loadPopularMovies}
+      />
+      <MediaCarousel
+        title="Popular TV Shows"
+        kind="tv"
+        loadPage={loadPopularTv}
+      />
     </main>
   );
 };
