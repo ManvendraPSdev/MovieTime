@@ -4,25 +4,12 @@
   margin: 0 auto;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+.title {
+  margin-bottom: 16px;
 }
 
-.section {
-  margin-bottom: 24px;
-}
-
-.section h2 {
-  margin-bottom: 12px;
-  font-size: 1.1rem;
-}
-
-.row {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 6px;
+.grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 }

@@ -54,7 +54,11 @@ export const useMovie = () => {
       setMovie(data);
       return data;
     } catch (error) {
-      setError(error.message || "Failed to fetch movie");
+      const msg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Failed to fetch movie";
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -63,11 +67,12 @@ export const useMovie = () => {
   const getMovieByTmdb = useCallback(async (tmdbId) => {
     try {
       const data = await fetchMovieByTmdbId(tmdbId);
+      setMovie(data);   // 🔥 IMPORTANT
       return data;
     } catch {
       return null;
     }
-  }, []);
+  }, [setMovie]);
 
   const addMovie = useCallback(async (movieData) => {
     setLoading(true);

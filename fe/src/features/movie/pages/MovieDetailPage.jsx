@@ -1,40 +1,132 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
 import { useMovie } from "../hooks/useMovie.hook";
+import { useTmdbApi } from "../hooks/useTmdbApi";
+import { fetchMovieByTmdbId } from "../services/movie.api";
 import styles from "./MovieDetailPage.module.scss";
+
+/** Backend uses Mongo ObjectIds; home TMDB cards use numeric TMDB ids. */
+const isMongoId = (value) =>
+  /^[a-fA-F0-9]{24}$/.test(String(value || ""));
+
+const mapTmdbMovieToView = (data) => ({
+  title: data.title || data.name || "Untitled",
+  poster: data.poster_path
+    ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
+    : "",
+  description: data.overview || "",
+  genres: Array.isArray(data.genres)
+    ? data.genres.map((g) => (typeof g === "string" ? g : g?.name)).filter(Boolean)
+    : [],
+  genre: data.genres?.[0]
+    ? typeof data.genres[0] === "string"
+      ? data.genres[0]
+      : data.genres[0]?.name
+    : "",
+  releaseDate: data.release_date || data.first_air_date || "",
+});
 
 const MovieDetailPage = () => {
   const { id } = useParams();
   const { movie, loading, error, getMovie } = useMovie();
+  const { getDetails } = useTmdbApi();
+
+  const [tmdbMovie, setTmdbMovie] = useState(null);
+  const [tmdbLoading, setTmdbLoading] = useState(false);
+  const [tmdbError, setTmdbError] = useState(null);
 
   useEffect(() => {
-    if (id) {
+    if (!id) return;
+
+    if (isMongoId(id)) {
+      setTmdbMovie(null);
+      setTmdbError(null);
       getMovie(id);
+      return;
     }
-  }, [getMovie, id]);
 
-  if (loading) return <Loader />;
-  if (error) return <p className={styles.error}>{error}</p>;
-  if (!movie) return <p className={styles.empty}>Movie not found.</p>;
+    let cancelled = false;
+    setTmdbMovie(null);
 
-  const genres = Array.isArray(movie.genres)
-    ? movie.genres.join(", ")
-    : movie.genre || "N/A";
+    const load = async () => {
+      setTmdbLoading(true);
+      setTmdbError(null);
+      try {
+        let fromDb = null;
+        try {
+          fromDb = await fetchMovieByTmdbId(id);
+        } catch {
+          fromDb = null;
+        }
+        if (cancelled) return;
+        if (fromDb) {
+          setTmdbMovie(fromDb);
+          return;
+        }
+
+        const details = await getDetails("movie", id);
+        if (cancelled) return;
+        setTmdbMovie(mapTmdbMovieToView(details));
+      } catch (e) {
+        if (!cancelled) {
+          setTmdbError(
+            e?.response?.data?.message ||
+              e?.message ||
+              "Failed to load movie"
+          );
+        }
+      } finally {
+        if (!cancelled) setTmdbLoading(false);
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, getMovie, getDetails]);
+
+  const mongo = isMongoId(id);
+  const displayMovie = mongo ? movie : tmdbMovie;
+  const displayLoading = mongo ? loading : tmdbLoading;
+  const displayError = mongo ? error : tmdbError;
+
+  if (displayLoading) return <Loader />;
+  if (displayError) return <p className={styles.error}>{displayError}</p>;
+  if (!displayMovie) return <p className={styles.empty}>Movie not found.</p>;
+
+  const genreList = Array.isArray(displayMovie.genres)
+    ? displayMovie.genres.map((g) =>
+        typeof g === "string" ? g : g?.name
+      ).filter(Boolean)
+    : [];
+  const genres =
+    genreList.length > 0
+      ? genreList.join(", ")
+      : displayMovie.genre || "N/A";
 
   return (
     <main className={styles.page}>
       <div className={styles.card}>
         <img
-          src={movie.poster || "https://via.placeholder.com/300x450?text=No+Image"}
-          alt={movie.title}
+          src={
+            displayMovie.poster ||
+            "https://via.placeholder.com/300x450?text=No+Image"
+          }
+          alt={displayMovie.title}
           className={styles.poster}
         />
         <div className={styles.content}>
-          <h1>{movie.title}</h1>
-          <p>{movie.description || "No description available."}</p>
-          <p><strong>Genre:</strong> {genres}</p>
-          <p><strong>Release Date:</strong> {movie.releaseDate || "N/A"}</p>
+          <h1>{displayMovie.title}</h1>
+          <p>{displayMovie.description || "No description available."}</p>
+          <p>
+            <strong>Genre:</strong> {genres}
+          </p>
+          <p>
+            <strong>Release Date:</strong>{" "}
+            {displayMovie.releaseDate || "N/A"}
+          </p>
         </div>
       </div>
     </main>
