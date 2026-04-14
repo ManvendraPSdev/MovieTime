@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { MovieContext } from "../movie.context";
 import {
   createMovie,
@@ -22,7 +22,7 @@ export const useMovie = () => {
     setError,
   } = context;
 
-  const getMovies = async (params = {}, options = {}) => {
+  const getMovies = useCallback(async (params = {}, options = {}) => {
     const { append = false } = options;
     setLoading(true);
     setError(null);
@@ -44,9 +44,9 @@ export const useMovie = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setError, setLoading, setMovies]);
 
-  const getMovie = async (id) => {
+  const getMovie = useCallback(async (id) => {
     setLoading(true);
     setError(null);
     try {
@@ -58,18 +58,18 @@ export const useMovie = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setError, setLoading, setMovie]);
 
-  const getMovieByTmdb = async (tmdbId) => {
+  const getMovieByTmdb = useCallback(async (tmdbId) => {
     try {
       const data = await fetchMovieByTmdbId(tmdbId);
       return data;
     } catch {
       return null;
     }
-  };
+  }, []);
 
-  const addMovie = async (movieData) => {
+  const addMovie = useCallback(async (movieData) => {
     setLoading(true);
     setError(null);
     try {
@@ -80,9 +80,9 @@ export const useMovie = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setError, setLoading, setMovies]);
 
-  const editMovie = async (id, movieData) => {
+  const editMovie = useCallback(async (id, movieData) => {
     setLoading(true);
     setError(null);
     try {
@@ -95,9 +95,9 @@ export const useMovie = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setError, setLoading, setMovies]);
 
-  const removeMovie = async (id) => {
+  const removeMovie = useCallback(async (id) => {
     setLoading(true);
     setError(null);
     try {
@@ -108,7 +108,7 @@ export const useMovie = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setError, setLoading, setMovies]);
 
   return {
     loading,
