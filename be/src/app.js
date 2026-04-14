@@ -10,11 +10,21 @@ import { movieRouter } from "./routes/movie.routes.js";
 import { favRouter } from "./routes/favorite.routes.js";
 import { watchHistoryRouter } from "./routes/watchHistory.routes.js";
 
+function corsOrigins() {
+    const raw = process.env.CORS_ORIGINS;
+    if (raw) {
+        const list = raw.split(",").map((s) => s.trim()).filter(Boolean);
+        if (list.length) return list;
+    }
+    return ["http://localhost:5173", "http://127.0.0.1:5173"];
+}
+
 const app = express() ; 
 app.use(express.json()) ; 
 app.use(cookieParser()) ; 
+const allowed = corsOrigins();
 app.use(cors({
-    origin : process.env.CORS_ORIGINS || "http://localhost:5173" , 
+    origin: allowed.length === 1 ? allowed[0] : allowed,
     credentials : true
 }))
 
