@@ -58,3 +58,10 @@ export const getTrendingPeople = async () => {
   });
   return res.data;
 };
+
+export const getVideos = async (type, id) => {
+  const res = await tmdb.get(`/${type}/${id}/videos`, {
+    params: { api_key: API_KEY },
+  });
+  return res.data;
+};

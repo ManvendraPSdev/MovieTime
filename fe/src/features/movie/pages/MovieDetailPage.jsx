@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
+import TrailerModal from "../components/TrailerModal";
 import { useMovie } from "../hooks/useMovie.hook";
+import { useTrailer } from "../hooks/useTrailer";
 import { useTmdbApi } from "../hooks/useTmdbApi";
 import { fetchMovieByTmdbId } from "../services/movie.api";
 import styles from "./MovieDetailPage.module.scss";
@@ -11,6 +13,8 @@ const isMongoId = (value) =>
   /^[a-fA-F0-9]{24}$/.test(String(value || ""));
 
 const mapTmdbMovieToView = (data) => ({
+  tmdbId: String(data.id || ""),
+  mediaType: data.media_type || "movie",
   title: data.title || data.name || "Untitled",
   poster: data.poster_path
     ? `https://image.tmdb.org/t/p/w500${data.poster_path}`
@@ -31,6 +35,15 @@ const MovieDetailPage = () => {
   const { id } = useParams();
   const { movie, loading, error, getMovie } = useMovie();
   const { getDetails } = useTmdbApi();
+  const [showTrailer, setShowTrailer] = useState(false);
+  const {
+    loading: trailerLoading,
+    error: trailerError,
+    trailerKey,
+    message: trailerMessage,
+    fetchTrailer,
+    resetTrailer,
+  } = useTrailer();
 
   const [tmdbMovie, setTmdbMovie] = useState(null);
   const [tmdbLoading, setTmdbLoading] = useState(false);
@@ -105,6 +118,24 @@ const MovieDetailPage = () => {
     genreList.length > 0
       ? genreList.join(", ")
       : displayMovie.genre || "N/A";
+  const title = displayMovie.title || displayMovie.name || "No Title";
+  const trailerType =
+    displayMovie.mediaType === "tv" || displayMovie.category === "tv"
+      ? "tv"
+      : "movie";
+  const trailerId = mongo
+    ? displayMovie.tmdbId
+    : displayMovie.tmdbId || id;
+
+  const handleOpenTrailer = async () => {
+    setShowTrailer(true);
+    await fetchTrailer(trailerType, trailerId);
+  };
+
+  const handleCloseTrailer = () => {
+    setShowTrailer(false);
+    resetTrailer();
+  };
 
   return (
     <main className={styles.page}>
@@ -118,7 +149,7 @@ const MovieDetailPage = () => {
           className={styles.poster}
         />
         <div className={styles.content}>
-          <h1>{displayMovie.title}</h1>
+          <h1>{title}</h1>
           <p>{displayMovie.description || "No description available."}</p>
           <p>
             <strong>Genre:</strong> {genres}
@@ -127,8 +158,19 @@ const MovieDetailPage = () => {
             <strong>Release Date:</strong>{" "}
             {displayMovie.releaseDate || "N/A"}
           </p>
+          <button onClick={handleOpenTrailer} className={styles.trailerButton}>
+            Watch Trailer
+          </button>
+          {trailerError ? <p className={styles.error}>{trailerError}</p> : null}
         </div>
       </div>
+      <TrailerModal
+        isOpen={showTrailer}
+        onClose={handleCloseTrailer}
+        trailerKey={trailerKey}
+        loading={trailerLoading}
+        message={trailerMessage}
+      />
     </main>
   );
 };

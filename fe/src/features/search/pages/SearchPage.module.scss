@@ -1,0 +1,39 @@
+.page {
+  padding: 20px;
+}
+
+.input {
+  width: 100%;
+  max-width: 520px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  margin: 12px 0 16px;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.mediaCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.type {
+  margin: 6px 0 0;
+  color: #6b7280;
+  text-transform: capitalize;
+  font-size: 0.82rem;
+}
+
+.error,
+.empty {
+  margin: 8px 0;
+}
+
+.error {
+  color: #dc2626;
+}

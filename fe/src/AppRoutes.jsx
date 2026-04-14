@@ -6,6 +6,7 @@ import BrowsePage from "./features/movie/pages/BrowsePage";
 import MovieDetailPage from "./features/movie/pages/MovieDetailPage";
 import UserDetailPage from "./features/movie/pages/UserDetailPage";
 import WatchHistoryPage from "./features/watchHistory/pages/WatchHistoryPage";
+import SearchPage from "./features/search/pages/SearchPage";
 
 export function AppRoutes(){
     return(
@@ -14,6 +15,7 @@ export function AppRoutes(){
             <Route path="/" element={<HomePage />} />
             <Route path="/browse" element={<BrowsePage />} />
             <Route path="/movies/:id" element={<MovieDetailPage/>} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/user" element={<UserDetailPage />} />
             {/* <Route path="/watch-history" element={<WatchHistoryPage />} /> */}
             <Route path="/watchHistory" element={<WatchHistoryPage />} />

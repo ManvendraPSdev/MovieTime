@@ -1,0 +1,25 @@
+.card {
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.name {
+  margin: 8px 10px 4px;
+  font-size: 0.92rem;
+}
+
+.type {
+  margin: 0 10px 10px;
+  color: #6b7280;
+  text-transform: capitalize;
+  font-size: 0.82rem;
+}
