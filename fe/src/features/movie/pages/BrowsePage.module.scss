@@ -1,0 +1,27 @@
+.page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.grid {
+  margin-top: 16px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.sentinel {
+  height: 12px;
+}
+
+.end {
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.92rem;
+  margin-top: 8px;
+}

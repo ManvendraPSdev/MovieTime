@@ -1,0 +1,20 @@
+.card {
+  min-width: 150px;
+  max-width: 170px;
+  text-decoration: none;
+  color: #111827;
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #e5e7eb;
+}
+
+.title {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}

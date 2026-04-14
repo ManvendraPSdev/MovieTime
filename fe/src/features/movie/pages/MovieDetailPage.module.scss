@@ -1,0 +1,43 @@
+.page {
+  padding: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.card {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 1fr;
+}
+
+.poster {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.content h1 {
+  margin-bottom: 12px;
+}
+
+.content p {
+  margin-bottom: 10px;
+  color: #374151;
+}
+
+.error,
+.empty {
+  padding: 20px;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+@media (min-width: 768px) {
+  .card {
+    grid-template-columns: 300px 1fr;
+    align-items: start;
+  }
+}

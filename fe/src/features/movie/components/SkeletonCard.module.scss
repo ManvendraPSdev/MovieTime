@@ -1,0 +1,19 @@
+.card {
+  min-width: 150px;
+  max-width: 170px;
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 8px;
+  background: #e5e7eb;
+}
+
+.title {
+  margin-top: 8px;
+  height: 14px;
+  width: 80%;
+  border-radius: 4px;
+  background: #e5e7eb;
+}
