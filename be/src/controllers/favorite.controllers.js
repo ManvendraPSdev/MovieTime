@@ -59,9 +59,9 @@ const getFavMovieBytmdbId = asyncHandler(async(req , res)=>{
     const userId = req.user.id ; 
     const tmdbId = req.params.tmdbId ; 
     const fav = await favMovieModel.findOne({
-        userId , 
+        user:userId , 
         tmdbId : String(tmdbId) ,
-        type : type === "tv" ? "tv" : "movie"
+        mediaType : type === "tv" ? "tv" : "movie"
     })
     return res.status(200).json({ isFavorite: !!fav });
 })
@@ -73,10 +73,10 @@ const getFavMovieBytmdbId = asyncHandler(async(req , res)=>{
  */
 const removeFavorite = asyncHandler(async (req, res) => {
     const { type = "movie" } = req.query;
-    const deleted = await Favorite.findOneAndDelete({
+    const deleted = await favMovieModel.findOneAndDelete({
         user: req.user.id,
         tmdbId: String(req.params.tmdbId),
-        type: type === "tv" ? "tv" : "movie",
+        mediaType: type === "tv" ? "tv" : "movie",
     });
     if (!deleted) {
         return res.status(404).json({ message: "Favorite not found" });

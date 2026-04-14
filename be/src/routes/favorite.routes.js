@@ -11,4 +11,4 @@ favRouter.use(authenticate)
 favRouter.post("/" , addFavorite , validate , addFavMovie) ; 
 favRouter.get("/" , getFavMovie) ; 
 favRouter.get("/tmdb/:tmdbId" , [tmdbIdParam] , typeQuery , validate , getFavMovieBytmdbId) ;
-favRouter.delete("/:tmdb" , [tmdbIdParam] , typeQuery , validate , removeFavorite) ; 
+favRouter.delete("/:tmdbId" , [tmdbIdParam] , typeQuery , validate , removeFavorite) ; 

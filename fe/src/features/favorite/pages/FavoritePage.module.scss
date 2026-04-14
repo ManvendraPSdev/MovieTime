@@ -1,0 +1,60 @@
+.page {
+  padding: 20px;
+}
+
+.title {
+  margin: 0 0 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.meta {
+  padding: 10px;
+}
+
+.meta h2 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+}
+
+.meta p {
+  margin: 0 0 10px;
+  color: #6b7280;
+  text-transform: capitalize;
+}
+
+.removeButton {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.loading,
+.empty,
+.error {
+  padding: 20px;
+}
+
+.error {
+  color: #dc2626;
+}
