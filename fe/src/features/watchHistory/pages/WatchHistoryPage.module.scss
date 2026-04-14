@@ -1,0 +1,64 @@
+.page {
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.clearButton {
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.meta {
+  padding: 10px;
+}
+
+.meta h2 {
+  font-size: 0.95rem;
+  margin: 0 0 4px;
+}
+
+.meta p {
+  margin: 0;
+  color: #6b7280;
+  text-transform: capitalize;
+}
+
+.loading,
+.empty,
+.error {
+  padding: 20px;
+}
+
+.error {
+  color: #dc2626;
+}
