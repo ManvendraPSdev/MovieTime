@@ -1,7 +1,8 @@
 import errorHandeler from "./middlewares/errorHandeler.middleware.js"
-
+import cors from 'cors' ; 
 import cookieParser from "cookie-parser";
 import express from "express";
+
 
 import authRouter  from "./routes/auth.routes.js";
 import { adminRouter } from "./routes/admin.routes.js";
@@ -12,6 +13,10 @@ import { watchHistoryRouter } from "./routes/watchHistory.routes.js";
 const app = express() ; 
 app.use(express.json()) ; 
 app.use(cookieParser()) ; 
+app.use(cors({
+    origin : process.env.CORS_ORIGINS || "http://localhost:5173" , 
+    credentials : true
+}))
 
 app.use("/api/auth" , authRouter) ; 
 app.use("/api/admin" , adminRouter) ; 
