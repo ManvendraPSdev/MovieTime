@@ -50,7 +50,11 @@ const BrowsePage = () => {
 
       <section className={styles.grid}>
         {movies.map((movie) => (
-          <MovieCard key={movie._id} movie={movie} />
+          <MovieCard
+            key={movie._id}
+            movie={movie}
+            kind={movie.category === "tv" ? "tv" : "movie"}
+          />
         ))}
 
         {loading && movies.length === 0

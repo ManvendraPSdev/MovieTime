@@ -1,18 +1,34 @@
 .page {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  color: var(--color-text);
 }
 
 .grid {
   margin-top: 16px;
   display: grid;
   gap: 14px;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 576px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 .error {
-  color: #b91c1c;
+  color: var(--color-error);
 }
 
 .sentinel {
@@ -21,7 +37,7 @@
 
 .end {
   text-align: center;
-  color: #6b7280;
+  color: var(--color-text-muted);
   font-size: 0.92rem;
   margin-top: 8px;
 }

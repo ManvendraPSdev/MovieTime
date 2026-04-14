@@ -1,20 +1,31 @@
-import React from 'react'
-import { AuthProvider } from './features/auth/auth.context'
-import { MovieContextProvider } from './features/movie/movie.context'
-import { AppRoutes } from './AppRoutes'
-import { WatchHistoryContextProvider } from './features/watchHistory/watchHistory.context'
-
+import React from "react";
+import { AuthProvider } from "./features/auth/auth.context";
+import { MovieContextProvider } from "./features/movie/movie.context";
+import { WatchHistoryContextProvider } from "./features/watchHistory/watchHistory.context";
+import { FavContextProvider } from "./features/favorite/fav.context";
+import { AdminContextProvider } from "./features/admin/admin.context";
+import { ThemeProvider } from "./layout/ThemeContext";
+import { ToastProvider } from "./layout/ToastContext";
+import { AppRoutes } from "./AppRoutes";
 
 const App = () => {
   return (
-    <AuthProvider>
-      <MovieContextProvider>
-        <WatchHistoryContextProvider>
-          <AppRoutes/>
-        </WatchHistoryContextProvider>
-      </MovieContextProvider>
-    </AuthProvider>
-  )
-}
+    <ThemeProvider>
+      <ToastProvider>
+        <AuthProvider>
+          <MovieContextProvider>
+            <WatchHistoryContextProvider>
+              <FavContextProvider>
+                <AdminContextProvider>
+                  <AppRoutes />
+                </AdminContextProvider>
+              </FavContextProvider>
+            </WatchHistoryContextProvider>
+          </MovieContextProvider>
+        </AuthProvider>
+      </ToastProvider>
+    </ThemeProvider>
+  );
+};
 
-export default App
+export default App;

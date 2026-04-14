@@ -19,6 +19,8 @@ const HomePage = () => {
           poster: movie.poster_path
             ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
             : "",
+          overview: movie.overview || "",
+          vote_average: movie.vote_average,
         }));
         setMovies(formatted);
       } catch (error) {
@@ -39,7 +41,7 @@ const HomePage = () => {
       ) : (
         <section className={styles.grid}>
           {movies.map((movie) => (
-            <MovieCard key={movie._id} movie={movie} />
+            <MovieCard key={movie._id} movie={movie} kind="movie" />
           ))}
         </section>
       )}

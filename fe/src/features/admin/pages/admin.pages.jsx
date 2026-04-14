@@ -15,7 +15,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     getUsers();
-  }, []);
+  }, [getUsers]);
 
   if (loading) return <h1>Loading...</h1>;
   if (error) return <p>{error}</p>;

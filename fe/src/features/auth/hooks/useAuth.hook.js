@@ -4,7 +4,7 @@ import { getMe, login, logout, register } from "../services/auth.api";
 
 export const useAuth = ()=>{
     const context = useContext(AuthContext) ; 
-    const {loading , setLoading , user , setUser} = context ; 
+    const {loading , setLoading , user , setUser , authReady} = context ; 
 
     const handelRegister = async({userName , email , password})=>{
         setLoading(true) ; 
@@ -63,6 +63,6 @@ export const useAuth = ()=>{
         }
     }
 
-    return {loading , user , handelRegister , handelLogin , handelLogout , handelGetMe}
+    return {loading , user , authReady , handelRegister , handelLogin , handelLogout , handelGetMe}
 } ; 
 

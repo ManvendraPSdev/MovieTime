@@ -1,0 +1,45 @@
+.page {
+  padding: 0;
+  color: var(--color-text);
+}
+
+.page h1 {
+  margin: 0 0 20px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.card {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+
+  button {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-elevated);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 0.88rem;
+
+    &:hover {
+      border-color: var(--color-brand);
+      color: var(--color-brand);
+    }
+  }
+}

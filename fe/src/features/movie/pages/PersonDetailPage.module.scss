@@ -1,0 +1,55 @@
+.page {
+  color: var(--color-text);
+}
+
+.card {
+  display: grid;
+  gap: 20px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+@media (min-width: 768px) {
+  .card {
+    grid-template-columns: 220px 1fr;
+    align-items: start;
+  }
+}
+
+.profile {
+  width: 100%;
+  max-width: 220px;
+  border-radius: 50%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  justify-self: center;
+}
+
+.content h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.meta {
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+}
+
+.bio {
+  color: var(--color-text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.error {
+  color: var(--color-error);
+  padding: 20px;
+}
+
+.empty {
+  color: var(--color-text-muted);
+  padding: 20px;
+}

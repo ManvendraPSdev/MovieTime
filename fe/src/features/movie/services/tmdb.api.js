@@ -65,3 +65,10 @@ export const getVideos = async (type, id) => {
   });
   return res.data;
 };
+
+export const getCredits = async (type, id) => {
+  const res = await tmdb.get(`/${type}/${id}/credits`, {
+    params: { api_key: API_KEY },
+  });
+  return res.data;
+};
