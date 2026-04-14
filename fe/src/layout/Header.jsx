@@ -37,7 +37,7 @@ const Header = () => {
       <div className={styles.inner}>
         <Link to="/" className={styles.logo} onClick={() => setMenuOpen(false)}>
           <RiMovie2Line size={28} aria-hidden />
-          <span>Movieverse</span>
+          <span>MovieTime</span>
         </Link>
 
         <form className={styles.searchForm} onSubmit={onSearchSubmit}>
